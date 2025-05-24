@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Waifu Pics API Demo</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #222;
+    color: white;
+    text-align: center;
+    padding: 20px;
+  }
+  select, button {
+    font-size: 16px;
+    padding: 8px;
+    margin: 8px;
+    border-radius: 5px;
+  }
+  img {
+    margin-top: 20px;
+    max-width: 90vw;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  }
+  #error {
+    color: #f55;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Waifu Pics API Demo</h1>
+
+<label for="typeSelect">Type:</label>
+<select id="typeSelect">
+  <option value="sfw">SFW (Safe For Work)</option>
+  <option value="nsfw">NSFW (Not Safe For Work)</option>
+</select>
+
+<label for="categorySelect">Category:</label>
+<select id="categorySelect">
+  <option value="waifu">Waifu</option>
+  <option value="neko">Neko</option>
+  <option value="shinobu">Shinobu</option>
+  <option value="megumin">Megumin</option>
+  <option value="bully">Bully</option>
+  <option value="cuddle">Cuddle</option>
+  <option value="cry">Cry</option>
+  <option value="hug">Hug</option>
+  <option value="awoo">Awoo</option>
+  <option value="kiss">Kiss</option>
+  <option value="lick">Lick</option>
+  <option value="pat">Pat</option>
+  <option value="smug">Smug</option>
+  <option value="bonk">Bonk</option>
+  <option value="yeet">Yeet</option>
+</select>
+
+<button id="fetchBtn">Fetch Image</button>
+
+<div id="error"></div>
+<img id="waifuImage" src="" alt="Waifu Pic" style="display:none;" />
+
+<script>
+  const fetchBtn = document.getElementById('fetchBtn');
+  const typeSelect = document.getElementById('typeSelect');
+  const categorySelect = document.getElementById('categorySelect');
+  const waifuImage = document.getElementById('waifuImage');
+  const errorDiv = document.getElementById('error');
+
+  fetchBtn.addEventListener('click', () => {
+    const type = typeSelect.value;
+    const category = categorySelect.value;
+    errorDiv.textContent = '';
+    waifuImage.style.display = 'none';
+
+    const url = `https://api.waifu.pics/${type}/${category}`;
+
+    fetch(url)
+      .then(res => {
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        if (data.url) {
+          waifuImage.src = data.url;
+          waifuImage.style.display = 'block';
+        } else {
+          errorDiv.textContent = 'No image URL found in response.';
+        }
+      })
+      .catch(err => {
+        errorDiv.textContent = `Error: ${err.message}`;
+      });
+  });
+</script>
+
+</body>
+</html>
